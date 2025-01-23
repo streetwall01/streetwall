@@ -1,0 +1,19 @@
+{
+    "admin": {
+        "username": "streetwall",
+        "password": "streetwall.111"
+    },
+    "mongodb": {
+        "uri": "mongodb+srv://natz001:2cIr5RfhW35MrICu@cluster0.zt1r4zw.mongodb.net/?retryWrites=true&w=majority",
+        "options": {
+            "useNewUrlParser": true,
+            "useUnifiedTopology": true
+        }
+    },
+    "session": {
+        "secret": "sgJqUoKBT0",
+        "cookie": {
+            "maxAge": 86400000
+        }
+    }
+}

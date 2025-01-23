@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Street Wall Upload</title>
+    <meta name="description" content="Street wall is kind of freedom wall can be freedom for posting, And no boundaries">
+    <meta name="author" content="Ralph Quinones">
+    <meta name="copyright" content="By Ralph Quinones - FW">
+    <meta name="robots" content="index, follow">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Street Wall">
+    <meta name="twitter:description" content="Street wall is kind of freedom wall can be freedom for posting, And no boundaries">
+    <meta name="twitter:image" content="/image/streetwall.png">
+    <meta name="twitter:image:alt" content="Street Wall">
+
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Street Wall - Upload">
+    <meta property="og:url" content="">
+    <meta property="og:image" content="/image/streetwall.svg"> 
+    <meta property="og:description" content="Street wall is kind of freedom wall can be freedom for posting, And no boundaries">
+
+    <link rel="shortcut icon" href="/image/favicon.svg" type="image/x-icon">
+    <link rel="stylesheet" href="/css/upload.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>Share Your Thoughts</h1>
+            <nav class="navigation">
+                <a href="/" class="nav-link">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M3 12h18M3 12L9 6M3 12l6 6"/>
+                    </svg>
+                    Back to Feed
+                </a>
+            </nav>
+        </header>
+
+        <form class="post-form" action="/" method="POST" enctype="multipart/form-data" id="uploadForm">
+            <div class="form-group">
+                <textarea 
+                    name="message" 
+                    id="message"
+                    placeholder=" "></textarea>
+                <label for="message">What's on your mind?</label>
+            </div>
+            
+            <div class="media-upload">
+                <div class="upload-zone" id="dropZone">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                        <polyline points="17 8 12 3 7 8"/>
+                        <line x1="12" y1="3" x2="12" y2="15"/>
+                    </svg>
+                    <div class="upload-text">
+                        <label for="files">Add Photos, Videos, or GIFs</label>
+                        <span class="upload-hint">Drag & drop or click to upload</span>
+                    </div>
+                    <input 
+                        type="file" 
+                        id="files" 
+                        name="files" 
+                        multiple 
+                        accept="image/*,video/*,.gif,.heic">
+                </div>
+
+                <div class="selection-controls" id="selectionControls" style="display: none;">
+                    <button type="button" class="control-btn" onclick="selectAllFiles()">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M20 6L9 17l-5-5"/>
+                        </svg>
+                        Select All
+                    </button>
+                    <button type="button" class="control-btn delete" onclick="deleteSelectedFiles()">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                        </svg>
+                        Delete Selected
+                    </button>
+                </div>
+            </div>
+            
+            <div id="preview" class="preview-container"></div>
+            
+            <button type="submit" class="submit-btn" id="submitBtn">
+                <span class="btn-text">Share Post</span>
+                <svg class="btn-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/>
+                </svg>
+            </button>
+        </form>
+    </div>
+
+    <script>
+        const dropZone = document.getElementById('dropZone');
+        const fileInput = document.getElementById('files');
+        const preview = document.getElementById('preview');
+        const selectionControls = document.getElementById('selectionControls');
+        const form = document.getElementById('uploadForm');
+        const submitBtn = document.getElementById('submitBtn');
+
+        // Prevent default drag behaviors
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            dropZone.addEventListener(eventName, preventDefaults, false);
+            document.body.addEventListener(eventName, preventDefaults, false);
+        });
+
+        // Highlight drop zone when item is dragged over it
+        ['dragenter', 'dragover'].forEach(eventName => {
+            dropZone.addEventListener(eventName, highlight, false);
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            dropZone.addEventListener(eventName, unhighlight, false);
+        });
+
+        // Handle dropped files
+        dropZone.addEventListener('drop', handleDrop, false);
+
+        // Handle selected files
+        fileInput.addEventListener('change', handleFiles, false);
+
+        function preventDefaults (e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+
+        function highlight(e) {
+            dropZone.classList.add('highlight');
+        }
+
+        function unhighlight(e) {
+            dropZone.classList.remove('highlight');
+        }
+
+        function handleDrop(e) {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+            handleFiles({ target: { files: files } });
+        }
+
+        function handleFiles(e) {
+            const files = [...e.target.files];
+            files.forEach(previewFile);
+            if (files.length > 0) {
+                selectionControls.style.display = 'flex';
+            }
+        }
+
+        function previewFile(file) {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onloadend = function() {
+                const div = document.createElement('div');
+                div.className = 'preview-item';
+                
+                if (file.type.startsWith('image/')) {
+                    const img = document.createElement('img');
+                    img.src = reader.result;
+                    div.appendChild(img);
+                } else if (file.type.startsWith('video/')) {
+                    const video = document.createElement('video');
+                    video.src = reader.result;
+                    video.controls = true;
+                    div.appendChild(video);
+                }
+
+                const checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.className = 'file-select';
+                div.appendChild(checkbox);
+
+                preview.appendChild(div);
+            }
+        }
+
+        function selectAllFiles() {
+            const checkboxes = preview.querySelectorAll('.file-select');
+            checkboxes.forEach(checkbox => checkbox.checked = true);
+        }
+
+        function deleteSelectedFiles() {
+            const selectedItems = preview.querySelectorAll('.preview-item');
+            selectedItems.forEach(item => {
+                if (item.querySelector('.file-select').checked) {
+                    item.remove();
+                }
+            });
+            
+            if (preview.children.length === 0) {
+                selectionControls.style.display = 'none';
+                fileInput.value = '';
+            }
+        }
+
+        // Handle form submission
+        form.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            submitBtn.disabled = true;
+            submitBtn.querySelector('.btn-text').textContent = 'Posting...';
+
+            const formData = new FormData(form);
+            
+            try {
+                const response = await fetch('/', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (response.ok) {
+                    window.location.href = '/';
+                } else {
+                    const error = await response.json();
+                    throw new Error(error.message || 'Failed to upload post');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Error uploading post: ' + error.message);
+                submitBtn.disabled = false;
+                submitBtn.querySelector('.btn-text').textContent = 'Share Post';
+            }
+        });
+    </script>
+</body>
+</html>

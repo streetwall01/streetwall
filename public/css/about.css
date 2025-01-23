@@ -1,0 +1,324 @@
+/* About page styles */
+.about-container {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    color: #212529;
+    font-family: 'Playfair Display', 'Georgia', serif;
+    overflow-x: hidden;
+  }
+  
+  .nav-wrapper {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    background: rgba(255, 255, 255, 0.98);
+    backdrop-filter: blur(10px);
+    z-index: 1000;
+    box-shadow: 0 2px 20px rgba(0, 0, 0, 0.05);
+    padding: 1rem 0;
+  }
+  
+  .logo-container {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0 2rem;
+  }
+  
+  .logo-image {
+    width: 40px;
+    height: 40px;
+    transform-style: preserve-3d;
+    transition: transform 0.3s ease;
+  }
+  
+  .logo-text {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #1a1a1a;
+    letter-spacing: -0.5px;
+  }
+  
+  .logo-container:hover .logo-image {
+    transform: rotateY(180deg);
+  }
+  
+  .hero-section {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    perspective: 1500px;
+    padding: 0 2rem;
+    position: relative;
+    margin-top: -80px; /* Adjust for fixed nav */
+  }
+  
+  .hero-content {
+    text-align: center;
+    transform-style: preserve-3d;
+    width: 100%;
+    max-width: 1200px;
+    padding: 2rem;
+    position: relative;
+    z-index: 1;
+  }
+  
+  .hero-title {
+    font-family: 'Montserrat', sans-serif;
+    font-size: clamp(2.5rem, 8vw, 4.5rem);
+    margin-bottom: clamp(1rem, 3vw, 1.5rem);
+    font-weight: 800;
+    color: #1a1a1a;
+    letter-spacing: -1px;
+    line-height: 1.1;
+  }
+  
+  .hero-subtitle {
+    font-family: 'Source Sans Pro', sans-serif;
+    font-size: clamp(1.1rem, 3vw, 1.5rem);
+    margin-bottom: 2rem;
+    color: #495057;
+    font-weight: 300;
+    max-width: min(600px, 90%);
+    margin-left: auto;
+    margin-right: auto;
+  }
+  
+  .feature-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr));
+    gap: clamp(1.5rem, 4vw, 3rem);
+    padding: clamp(3rem, 6vw, 6rem) clamp(1rem, 3vw, 2rem);
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+  
+  .feature-card {
+    background: white;
+    padding: clamp(2rem, 4vw, 3rem);
+    border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.05);
+    transform-style: preserve-3d;
+    transition: all 0.4s ease;
+  }
+  
+  .feature-card:hover {
+    transform: translateZ(30px);
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.1);
+  }
+  
+  .feature-icon {
+    font-size: clamp(2rem, 4vw, 2.5rem);
+    margin-bottom: 1.5rem;
+    display: inline-block;
+    transform-style: preserve-3d;
+  }
+  
+  .feature-card h3 {
+    font-family: 'Montserrat', sans-serif;
+    font-size: clamp(1.2rem, 3vw, 1.5rem);
+    margin-bottom: 1rem;
+    color: #1a1a1a;
+    font-weight: 700;
+  }
+  
+  .feature-card p {
+    font-family: 'Source Sans Pro', sans-serif;
+    color: #495057;
+    line-height: 1.6;
+    font-size: clamp(0.9rem, 2vw, 1rem);
+  }
+  
+  .privacy-section {
+    padding: clamp(3rem, 6vw, 6rem) clamp(1rem, 3vw, 2rem);
+    background: white;
+  }
+  
+  .privacy-content {
+    max-width: min(900px, 90%);
+    margin: 0 auto;
+    font-family: 'Source Sans Pro', sans-serif;
+  }
+  
+  .privacy-content h2 {
+    font-family: 'Montserrat', sans-serif;
+    font-size: clamp(2rem, 5vw, 2.5rem);
+    margin-bottom: clamp(1.5rem, 3vw, 2rem);
+    color: #1a1a1a;
+    font-weight: 700;
+  }
+  
+  .privacy-content ul {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  .privacy-content li {
+    margin-bottom: 1rem;
+    padding-left: 2rem;
+    position: relative;
+    font-size: clamp(0.9rem, 2vw, 1rem);
+  }
+  
+  .privacy-content li::before {
+    content: "•";
+    color: #0066cc;
+    font-weight: bold;
+    position: absolute;
+    left: 0;
+  }
+  
+  .owner-section {
+    text-align: center;
+    padding: clamp(3rem, 6vw, 6rem) clamp(1rem, 3vw, 2rem);
+    background: #f8f9fa;
+  }
+  
+  .owner-card {
+    display: inline-block;
+    padding: clamp(2rem, 4vw, 3rem);
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.05);
+    transform-style: preserve-3d;
+    max-width: min(400px, 90%);
+  }
+  
+  .owner-image {
+    width: clamp(120px, 30vw, 180px);
+    height: clamp(120px, 30vw, 180px);
+    border-radius: 50%;
+    margin-bottom: clamp(1.5rem, 3vw, 2rem);
+    object-fit: cover;
+    border: 4px solid #f8f9fa;
+  }
+  
+  .owner-card h3 {
+    font-family: 'Montserrat', sans-serif;
+    font-size: clamp(1.4rem, 3vw, 1.8rem);
+    margin-bottom: 0.5rem;
+    color: #1a1a1a;
+  }
+  
+  .owner-card p {
+    font-family: 'Source Sans Pro', sans-serif;
+    color: #495057;
+    line-height: 1.6;
+    font-size: clamp(0.9rem, 2vw, 1rem);
+  }
+  
+  .owner-card .title {
+    color: #0066cc;
+    font-weight: 600;
+    margin-bottom: 1rem;
+  }
+  
+  .quote {
+    font-style: italic;
+    color: #6c757d;
+    margin-top: 1rem;
+    font-size: clamp(0.95rem, 2vw, 1.1rem);
+  }
+  
+  .scroll-indicator {
+    position: absolute;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    animation: bounce 2s infinite;
+    opacity: 0.6;
+  }
+  
+  @keyframes bounce {
+    0%, 20%, 50%, 80%, 100% {
+      transform: translateY(0) translateX(-50%);
+    }
+    40% {
+      transform: translateY(-30px) translateX(-50%);
+    }
+    60% {
+      transform: translateY(-15px) translateX(-50%);
+    }
+  }
+  
+  /* Enhanced Mobile Responsiveness */
+  @media (max-width: 768px) {
+    .nav-wrapper {
+      padding: 0.75rem 0;
+    }
+  
+    .logo-container {
+      padding: 0 1rem;
+    }
+  
+    .logo-text {
+      font-size: 1.5rem;
+    }
+  
+    .logo-image {
+      width: 32px;
+      height: 32px;
+    }
+  
+    .hero-section {
+      margin-top: -60px;
+    }
+  
+    .feature-grid {
+      gap: 2rem;
+    }
+  
+    .privacy-content,
+    .owner-section {
+      padding: 3rem 1rem;
+    }
+  }
+  
+  /* Small Screen Adjustments */
+  @media (max-width: 480px) {
+    .hero-section {
+      padding: 0 1rem;
+    }
+  
+    .feature-card {
+      padding: 1.5rem;
+    }
+  
+    .owner-card {
+      padding: 1.5rem;
+    }
+  }
+  
+  /* Landscape Mode Adjustments */
+  @media (max-height: 600px) and (orientation: landscape) {
+    .hero-section {
+      min-height: 120vh;
+    }
+  
+    .hero-title {
+      font-size: clamp(2rem, 6vw, 3.5rem);
+    }
+  
+    .owner-image {
+      width: 100px;
+      height: 100px;
+    }
+  }
+  
+  /* Print Styles */
+  @media print {
+    .about-container {
+      background: white;
+    }
+  
+    .nav-wrapper {
+      position: relative;
+      box-shadow: none;
+    }
+  
+    .scroll-indicator {
+      display: none;
+    }
+  }

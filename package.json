@@ -1,0 +1,24 @@
+{
+  "name": "freedom-wall",
+  "version": "1.0.0",
+  "description": "A Freedom Wall application",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
+  "dependencies": {
+    "bcrypt": "^5.1.1",
+    "body-parser": "^1.20.2",
+    "connect-mongo": "^5.1.0",
+    "ejs": "^3.1.9",
+    "express": "^4.21.2",
+    "express-session": "^1.18.1",
+    "googleapis": "^144.0.0",
+    "mongoose": "^8.9.5",
+    "multer": "^1.4.5-lts.1",
+    "nodemon": "^3.0.1",
+    "sharp": "^0.32.5",
+    "socket.io": "^4.8.1"
+  }
+}
