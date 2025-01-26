@@ -298,35 +298,20 @@
                     <!-- Appeals Tab -->
                     <div class="tab-pane fade" id="appeals">
                         <div class="card dashboard-card mb-4">
-                            <div class="card-header bg-white">
-                                <div class="d-flex justify-content-between align-items-center mb-2">
-                                    <h5 class="mb-0">Delete Appeals</h5>
-                                    <button class="btn btn-danger btn-sm" onclick="clearAllAppeals()">
-                                        <i class="bi bi-trash"></i> Clear All Appeals
-                                    </button>
-                                </div>
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <div class="input-group w-50">
-                                        <input type="text" class="form-control" id="appealSearch" placeholder="Search appeals...">
-                                        <button class="btn btn-outline-secondary" type="button" onclick="searchAppeals()">
-                                            <i class="bi bi-search"></i>
-                                        </button>
-                                    </div>
-                                    <div class="btn-group">
-                                        <button class="btn btn-outline-secondary btn-sm active" data-filter="all">All</button>
-                                        <button class="btn btn-outline-secondary btn-sm" data-filter="pending">Pending</button>
-                                        <button class="btn btn-outline-secondary btn-sm" data-filter="approved">Approved</button>
-                                        <button class="btn btn-outline-secondary btn-sm" data-filter="rejected">Rejected</button>
-                                    </div>
+                            <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0">Delete Appeals</h5>
+                                <div class="btn-group">
+                                    <button class="btn btn-outline-secondary btn-sm active" data-filter="all">All</button>
+                                    <button class="btn btn-outline-secondary btn-sm" data-filter="pending">Pending</button>
+                                    <button class="btn btn-outline-secondary btn-sm" data-filter="approved">Approved</button>
+                                    <button class="btn btn-outline-secondary btn-sm" data-filter="rejected">Rejected</button>
                                 </div>
                             </div>
                             <div class="card-body">
                                 <div id="appeals-list">
                                     <% if (appeals && appeals.length > 0) { %>
                                         <% appeals.forEach(function(appeal) { %>
-                                            <div class="appeal-card card mb-3" 
-                                                 data-status="<%= appeal.status || 'pending' %>"
-                                                 data-appeal-id="<%= appeal._id %>">
+                                            <div class="appeal-card card mb-3" data-status="<%= appeal.status %>">
                                                 <div class="card-body">
                                                     <div class="d-flex flex-column flex-md-row justify-content-between">
                                                         <div class="appeal-details mb-3 mb-md-0">
@@ -346,23 +331,19 @@
                                                                         onclick="updateAppealStatus('<%= appeal._id %>', 'approved')">
                                                                     Approve
                                                                 </button>
-                                                                <button class="btn btn-danger btn-sm mb-md-2 me-2 me-md-0" 
+                                                                <button class="btn btn-danger btn-sm" 
                                                                         onclick="updateAppealStatus('<%= appeal._id %>', 'rejected')">
                                                                     Reject
                                                                 </button>
                                                             <% } %>
-                                                            <button class="btn btn-outline-danger btn-sm" 
-                                                                    onclick="deleteAppeal('<%= appeal._id %>')">
-                                                                <i class="bi bi-trash"></i> Delete
-                                                            </button>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
                                         <% }); %>
                                     <% } else { %>
-                                        <div class="text-center">
-                                            <p class="text-muted">No appeals found</p>
+                                        <div class="text-center py-4">
+                                            <p class="text-muted mb-0">No appeals found</p>
                                         </div>
                                     <% } %>
                                 </div>

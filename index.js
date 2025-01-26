@@ -396,41 +396,6 @@ app.post('/admin/handle-appeal/:id', isAdmin, async (req, res) => {
   }
 });
 
-// Delete a single appeal
-app.delete('/admin/delete-appeal/:id', isAdmin, async (req, res) => {
-  try {
-    const appealId = req.params.id;
-    const appeal = await Appeal.findByIdAndDelete(appealId);
-    
-    if (!appeal) {
-      return res.status(404).json({ success: false, message: 'Appeal not found' });
-    }
-
-    // Emit socket event for real-time update
-    io.emit('appealDeleted', appealId);
-    
-    res.json({ success: true });
-  } catch (error) {
-    console.error('Error deleting appeal:', error);
-    res.status(500).json({ success: false, message: 'Internal server error' });
-  }
-});
-
-// Clear all appeals
-app.delete('/admin/clear-appeals', isAdmin, async (req, res) => {
-  try {
-    await Appeal.deleteMany({});
-    
-    // Emit socket event for real-time update
-    io.emit('appealsCleared');
-    
-    res.json({ success: true });
-  } catch (error) {
-    console.error('Error clearing appeals:', error);
-    res.status(500).json({ success: false, message: 'Internal server error' });
-  }
-});
-
 app.get('/admin/logout', (req, res) => {
   req.session.destroy();
   res.redirect('/admin/login');
