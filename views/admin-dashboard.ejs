@@ -21,141 +21,21 @@
     <meta property="og:description" content="Street wall is kind of freedom wall can be freedom for posting, And no boundaries">
 
     <link rel="shortcut icon" href="/image/favicon.svg" type="image/x-icon">
+    <link rel="stylesheet" href="/css/admin-dashboard.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
     <script src="/socket.io/socket.io.js"></script>
-    <style>
-        /* Responsive Sidebar */
-        @media (max-width: 768px) {
-            .sidebar {
-                position: fixed;
-                top: 0;
-                left: -100%;
-                height: 100vh;
-                z-index: 1000;
-                transition: 0.3s;
-                width: 250px !important;
-            }
-            .sidebar.active {
-                left: 0;
-            }
-            .main-content {
-                margin-left: 0 !important;
-                width: 100% !important;
-            }
-            .toggle-sidebar {
-                display: block !important;
-            }
-        }
 
-        /* Hide sidebar toggle on larger screens */
-        .toggle-sidebar {
-            display: none;
-            position: fixed;
-            top: 1rem;
-            left: 1rem;
-            z-index: 1001;
-        }
-
-        /* Dashboard Cards */
-        .dashboard-card {
-            border-radius: 15px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            transition: transform 0.2s;
-            margin-bottom: 1rem;
-        }
-        .dashboard-card:hover {
-            transform: translateY(-5px);
-        }
-        
-        /* Stats Cards */
-        .stat-card {
-            background: linear-gradient(45deg, #4158D0, #C850C0);
-            color: white;
-            border-radius: 12px;
-            padding: 1.25rem;
-            height: 100%;
-        }
-        
-        /* Table Responsive */
-        .table-responsive {
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-        }
-        
-        /* Card Content */
-        .card-body {
-            padding: 1.25rem;
-        }
-        
-        @media (max-width: 576px) {
-            .card-body {
-                padding: 1rem;
-            }
-            .stat-card {
-                margin-bottom: 1rem;
-            }
-            .table td, .table th {
-                padding: 0.5rem;
-                font-size: 0.875rem;
-            }
-            .btn-sm {
-                padding: 0.25rem 0.5rem;
-                font-size: 0.75rem;
-            }
-        }
-
-        /* Appeals Section */
-        .appeal-card {
-            border-left: 4px solid #ffc107;
-            margin-bottom: 1rem;
-            transition: all 0.2s;
-        }
-        .appeal-card[data-status='approved'] {
-            border-left-color: #198754;
-        }
-        .appeal-card[data-status='rejected'] {
-            border-left-color: #dc3545;
-        }
-        
-        /* Navigation Pills */
-        .nav-pills .nav-link {
-            border-radius: 10px;
-            padding: 0.75rem 1.25rem;
-            margin-bottom: 0.5rem;
-            transition: all 0.2s;
-        }
-        .nav-pills .nav-link.active {
-            background-color: #4158D0;
-            box-shadow: 0 2px 4px rgba(65, 88, 208, 0.2);
-        }
-        
-        /* Main Content Area */
-        .main-content {
-            transition: margin-left 0.3s;
-        }
-        
-        /* Utility Classes */
-        .text-truncate-2 {
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-        }
-    </style>
 </head>
 <body class="bg-light">
-    <!-- Sidebar Toggle Button -->
-    <button class="btn btn-primary toggle-sidebar" type="button">
-        <i class="bi bi-list"></i>
-    </button>
 
     <div class="container-fluid">
         <div class="row">
             <!-- Sidebar -->
             <div class="col-md-2 bg-dark text-light py-4 min-vh-100 sidebar">
                 <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h4 class="mb-0">Admin Street Wall</h4>
+                    <h4 class="mb-0">Admin - SW</h4>
                     <button class="btn btn-link text-light d-md-none" onclick="toggleSidebar()">
                         <i class="bi bi-x-lg"></i>
                     </button>
@@ -223,7 +103,9 @@
                                         </thead>
                                         <tbody id="activitiesTable">
                                             <% if (activities && activities.length > 0) { %>
-                                                <% activities.forEach(function(activity) { %>
+                                                <% activities.forEach(function(activity) { %> Continuing with the admin-dashboard.ejs file content:
+
+```html
                                                     <tr>
                                                         <td><%= new Date(activity.timestamp).toLocaleString() %></td>
                                                         <td><span class="badge bg-<%= activity.action === 'New Post' ? 'primary' : 'warning' %>">
@@ -299,7 +181,12 @@
                     <div class="tab-pane fade" id="appeals">
                         <div class="card dashboard-card mb-4">
                             <div class="card-header bg-white d-flex justify-content-between align-items-center">
-                                <h5 class="mb-0">Delete Appeals</h5>
+                                <div class="d-flex align-items-center gap-3">
+                                    <h5 class="mb-0">Delete Appeals</h5>
+                                    <button class="btn btn-danger btn-sm" onclick="clearAllAppeals()">
+                                        <i class="bi bi-trash"></i> Clear All Appeals
+                                    </button>
+                                </div>
                                 <div class="btn-group">
                                     <button class="btn btn-outline-secondary btn-sm active" data-filter="all">All</button>
                                     <button class="btn btn-outline-secondary btn-sm" data-filter="pending">Pending</button>
@@ -311,7 +198,7 @@
                                 <div id="appeals-list">
                                     <% if (appeals && appeals.length > 0) { %>
                                         <% appeals.forEach(function(appeal) { %>
-                                            <div class="appeal-card card mb-3" data-status="<%= appeal.status %>">
+                                            <div class="appeal-card card mb-3" data-appeal-id="<%= appeal._id %>" data-status="<%= appeal.status %>">
                                                 <div class="card-body">
                                                     <div class="d-flex flex-column flex-md-row justify-content-between">
                                                         <div class="appeal-details mb-3 mb-md-0">
@@ -319,20 +206,24 @@
                                                             <p class="mb-1"><small>Post ID: <%= appeal.postId %></small></p>
                                                             <p class="mb-1"><small>Email: <%= appeal.email %></small></p>
                                                             <p class="mb-0"><small>Date: <%= new Date(appeal.timestamp).toLocaleString() %></small></p>
+                                                            <% if (appeal.status) { %>
+                                                                <span class="badge bg-<%= appeal.status === 'approved' ? 'success' : appeal.status === 'rejected' ? 'danger' : 'warning' %>">
+                                                                    <%= appeal.status.charAt(0).toUpperCase() + appeal.status.slice(1) %>
+                                                                </span>
+                                                            <% } %>
                                                         </div>
                                                         <div class="appeal-actions d-flex flex-row flex-md-column">
                                                             <button class="btn btn-outline-primary btn-sm mb-md-2 me-2 me-md-0" 
-                                                                    data-bs-toggle="modal" 
-                                                                    data-bs-target="#reasonModal_<%= appeal._id %>">
+                                                                    onclick="viewAppealReason('<%= appeal._id %>', '<%= appeal.reason %>')">
                                                                 View Reason
                                                             </button>
                                                             <% if (!appeal.status || appeal.status === 'pending') { %>
                                                                 <button class="btn btn-success btn-sm mb-md-2 me-2 me-md-0" 
-                                                                        onclick="updateAppealStatus('<%= appeal._id %>', 'approved')">
+                                                                        onclick="handleAppeal('<%= appeal._id %>', '<%= appeal.postId %>', 'approved')">
                                                                     Approve
                                                                 </button>
                                                                 <button class="btn btn-danger btn-sm" 
-                                                                        onclick="updateAppealStatus('<%= appeal._id %>', 'rejected')">
+                                                                        onclick="handleAppeal('<%= appeal._id %>', '<%= appeal.postId %>', 'rejected')">
                                                                     Reject
                                                                 </button>
                                                             <% } %>
@@ -373,24 +264,20 @@
         </div>
     </div>
 
-    <!-- Appeal Reason Modals -->
-    <% if (appeals && appeals.length > 0) { %>
-        <% appeals.forEach(function(appeal) { %>
-            <div class="modal fade" id="reasonModal_<%= appeal._id %>" tabindex="-1" aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title">Appeal Reason</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <p class="mb-0"><%= appeal.reason %></p>
-                        </div>
-                    </div>
+    <!-- Appeal Reason Modal -->
+    <div class="modal fade" id="reasonModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Appeal Reason</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p id="appealReason"></p>
                 </div>
             </div>
-        <% }); %>
-    <% } %>
+        </div>
+    </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="/js/admin-dashboard.js"></script>

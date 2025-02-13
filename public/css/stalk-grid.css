@@ -1,0 +1,92 @@
+.media-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 4px;
+    padding: 4px;
+    background: var(--bg-primary);
+    max-height: 800px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
+}
+
+.media-grid::-webkit-scrollbar {
+    width: 6px;
+}
+
+.media-grid::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.media-grid::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, 0.2);
+    border-radius: 3px;
+}
+
+.media-item {
+    position: relative;
+    aspect-ratio: 1;
+    overflow: hidden;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+.media-item:hover {
+    transform: scale(1.02);
+}
+
+.media-item img,
+.media-item video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.grid-pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 1rem;
+    gap: 1rem;
+    background: var(--bg-primary);
+}
+
+.grid-pagination button {
+    background: none;
+    border: 1px solid var(--border-color);
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.grid-pagination button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.grid-pagination button:not(:disabled):hover {
+    background: var(--bg-secondary);
+}
+
+.page-info {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+@media (max-width: 768px) {
+    .media-grid {
+        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+        max-height: 600px;
+    }
+}
+
+@media (max-width: 480px) {
+    .media-grid {
+        grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+        max-height: 500px;
+    }
+}

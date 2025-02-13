@@ -33,12 +33,12 @@
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M3 12h18M3 12L9 6M3 12l6 6"/>
                     </svg>
-                    Back to Feed
+                    Back
                 </a>
             </nav>
         </header>
 
-        <form class="appeal-form" id="appealForm" action="/submit-appeal" method="POST">
+        <form class="appeal-form" id="appealForm">
             <div class="form-group">
                 <input type="email" 
                        id="email" 
@@ -54,11 +54,11 @@
                 <input type="text" 
                        id="postId" 
                        name="postId" 
+                       maxlength="24"
                        required 
-                       pattern="[0-9]+"
                        placeholder=" ">
                 <label for="postId">Post ID</label>
-                <div class="error-message">Please provide a valid Post ID (numbers only).</div>
+                <div class="error-message">Please provide a valid Post ID</div>
             </div>
 
             <div class="form-group">
@@ -95,8 +95,11 @@
                 </button>
             </div>
         </form>
+
+        <p>If you want to follow up your delete-appeal, You can email us at <a href="mailto:streetwall011@gmail.com">streetwall011@gmail.com</a>. Also if you email us, please include your Post ID. <strong>Take note: Your post ID is correct and there is no changes in the Post ID, because if there is any changes in the post ID, your Delete Appeal will be invalid, Automatic Rejected by Admin if there is any mistake in the post ID that you copied and pasted</strong></p>
     </div>
 
+    <script src="/socket.io/socket.io.js"></script>
     <script src="/js/delete-appeal.js"></script>
 </body>
 </html>

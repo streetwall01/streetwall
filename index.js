@@ -8,7 +8,6 @@ const mongoose = require('mongoose');
 const session = require('express-session');
 const MongoStore = require('connect-mongo');
 const bcrypt = require('bcrypt');
-
 const app = express();
 const server = require('http').createServer(app);
 const io = require('socket.io')(server);
@@ -19,6 +18,7 @@ const config = require('./config.json');
 const Post = require('./models/Post');
 const Appeal = require('./models/Appeal');
 const Admin = require('./models/Admin');
+const Stalk = require('./models/Stalk');
 
 // Connect to MongoDB
 mongoose.connect(config.mongodb.uri, config.mongodb.options)
@@ -149,6 +149,19 @@ io.on('connection', (socket) => {
       console.error('Error getting stats:', error);
     }
   });
+
+  socket.on('viewPost', async (postId) => {
+    try {
+      const stalk = await Stalk.findOneAndUpdate(
+        { postId: postId },
+        { $inc: { viewCount: 1 }, lastViewed: new Date() },
+        { upsert: true, new: true }
+      );
+      io.emit('updateViews', stalk.viewCount);
+    } catch (error) {
+      console.error('Error updating view count:', error);
+    }
+  });
 });
 
 // Routes
@@ -172,6 +185,28 @@ app.get('/delete-appeal', (req, res) => {
 
 app.get('/about', (req, res) => {
   res.render('about');
+});
+
+// View individual post route
+app.get('/post/:id', async (req, res) => {
+  try {
+    const post = await Post.findById(req.params.id);
+    if (!post || post.isDeleted) {
+      return res.status(404).redirect('/');
+    }
+
+    // Get or create view count
+    let stalk = await Stalk.findOne({ postId: post._id });
+    if (!stalk) {
+      stalk = new Stalk({ postId: post._id });
+      await stalk.save();
+    }
+
+    res.render('stalk', { post, views: stalk.viewCount });
+  } catch (error) {
+    console.error('Error viewing post:', error);
+    res.status(500).redirect('/');
+  }
 });
 
 app.post('/submit-appeal', async (req, res) => {
@@ -264,6 +299,7 @@ app.post('/', upload.array('files', 10), async (req, res) => {
   }
 });
 
+// Admin routes
 app.get('/admin/login', (req, res) => {
   res.render('admin-login', { error: null });
 });
@@ -367,32 +403,70 @@ app.delete('/admin/delete-post/:id', isAdmin, async (req, res) => {
   }
 });
 
+// Handle appeal route
 app.post('/admin/handle-appeal/:id', isAdmin, async (req, res) => {
   try {
     const { id } = req.params;
-    const { status, response } = req.body;
+    const { status, postId } = req.body;
     
-    const appeal = await Appeal.findOneAndUpdate(
-      { id },
-      { 
-        status,
-        adminResponse: response,
-        $set: { 'timestamp.responded': new Date() }
-      },
-      { new: true }
-    );
-
-    if (status === 'approved') {
-      await Post.findOneAndUpdate(
-        { id: appeal.postId },
-        { isDeleted: false }
-      );
+    // Find and update the appeal
+    const appeal = await Appeal.findById(id);
+    
+    if (!appeal) {
+      return res.status(404).json({ success: false, message: 'Appeal not found' });
     }
 
-    res.json({ success: true });
+    // Update appeal status
+    appeal.status = status;
+    appeal.processedAt = new Date();
+    appeal.processed = true;
+    
+    // If approved, delete the associated post
+    if (status === 'approved') {
+      const post = await Post.findById(postId);
+      if (post) {
+        post.isDeleted = true;
+        await post.save();
+        
+        // Emit post deleted event
+        io.emit('postDeleted', postId);
+      }
+    }
+
+    await appeal.save();
+
+    // Emit appeal updated event
+    io.emit('appealUpdated', {
+      appealId: id,
+      status,
+      postId: status === 'approved' ? postId : null
+    });
+
+    res.json({ 
+      success: true, 
+      message: `Appeal ${status}`,
+      appeal: appeal
+    });
+
   } catch (error) {
     console.error('Error handling appeal:', error);
-    res.status(500).json({ success: false });
+    res.status(500).json({ success: false, message: 'Error handling appeal' });
+  }
+});
+
+// Clear all appeals route
+app.post('/admin/clear-appeals', isAdmin, async (req, res) => {
+  try {
+    // Delete all appeals from the database
+    await Appeal.deleteMany({});
+    
+    // Emit event for real-time updates
+    io.emit('appealsCleared');
+    
+    res.json({ success: true, message: 'All appeals cleared successfully' });
+  } catch (error) {
+    console.error('Error clearing appeals:', error);
+    res.status(500).json({ success: false, message: 'Failed to clear appeals' });
   }
 });
 

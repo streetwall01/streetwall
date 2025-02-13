@@ -84,7 +84,7 @@
     <div class="container d-flex justify-content-center align-items-center">
         <div class="feed">
             <% messages.forEach(function(msg) { %>
-                <div class="card">
+                <a href="/post/<%= msg._id %>" class="card">
                     <% if (msg.media && msg.media.length > 0) { %>
                         <div class="card-image-container <%= msg.media.length > 1 ? 'multi-image' : '' %>">
                             <% msg.media.forEach(function(media, index) { %>
@@ -93,7 +93,6 @@
                                         <img src="/uploads/<%= media.filename %>" 
                                              alt="User uploaded image"
                                              loading="lazy"
-                                             onclick="openMediaViewer('/uploads/<%= media.filename %>')"
                                              class="card-image">
                                         <% if (index === 3 && msg.media.length > 4) { %>
                                             <div class="more-overlay">
@@ -103,7 +102,7 @@
                                     </div>
                                 <% } else if (media.type === 'video') { %>
                                     <div class="video-wrapper <%= msg.media.length > 1 ? `grid-item-${Math.min(msg.media.length, 4)}` : '' %> <%= index >= 4 ? 'hidden' : '' %>">
-                                        <video controls class="card-video">
+                                        <video class="card-video">
                                             <source src="/uploads/<%= media.filename %>" type="video/mp4">
                                             Your browser does not support the video tag.
                                         </video>
@@ -118,17 +117,17 @@
                         <% } %>
                         <div class="timestamp">
                             <%= new Date(msg.timestamp).toLocaleString() %>
-                            <span class="post-id"><%= msg.id %></span>
+                            <span class="post-id"><%= msg._id %></span>
                         </div>
                     </div>
-                </div>
+                </a>
             <% }); %>
         </div>
-    
-    <div id="mediaViewer" class="media-viewer">
-        <span class="close-button" onclick="closeMediaViewer()">&times;</span>
-        <img id="expandedMedia">
     </div>
+
+    <footer>
+        <p>Copyright &copy; Street Wall 2024</p>
+    </footer>
 
     <script src="/socket.io/socket.io.js"></script>
     <script>
@@ -179,7 +178,7 @@
                         ${message.content ? `<p class="card-text">${message.content}</p>` : ''}
                         <div class="timestamp">
                             ${new Date(message.timestamp).toLocaleString()}
-                            <span class="post-id">#${message._id}</span>
+                            <span class="post-id">${message._id}</span>
                         </div>
                     </div>
                 `;

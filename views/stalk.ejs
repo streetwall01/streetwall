@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Post Street Wall</title>
+    <meta name="description" content="Street wall is kind of freedom wall can be freedom for posting, And no boundaries">
+    <meta name="author" content="Ralph Quinones">
+    <meta name="copyright" content="By Ralph Quinones - FW">
+    <meta name="robots" content="index, follow">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Street Wall">
+    <meta name="twitter:description" content="Street wall is kind of freedom wall can be freedom for posting, And no boundaries">
+    <meta name="twitter:image" content="/image/streetwall.png">
+    <meta name="twitter:image:alt" content="Street Wall">
+    
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Street Wall">
+    <meta property="og:url" content="">
+    <meta property="og:image" content="/image/streetwall.svg">
+    <meta property="og:description" content="Street wall is kind of freedom wall can be freedom for posting, And no boundaries">
+    
+    <link rel="shortcut icon" href="/image/favicon.svg" type="image/x-icon">
+    <link rel="stylesheet" href="/css/stalk.css">
+    <link rel="stylesheet" href="/css/stalk-grid.css">
+    <link rel="stylesheet" href="/css/stalk-intro.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/hammer.js/2.0.8/hammer.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+</head>
+<body>
+    <div class="intro-animation">
+        <div class="intro-logo">
+            <img src="/image/streetwall.png" alt="Street Wall Logo" class="logo-image">
+            <div class="logo-text">Street Wall</div>
+        </div>
+        <div class="progress-line">
+            <div class="line"></div>
+        </div>
+        <div class="loading-text">Loading your content...</div>
+    </div>
+
+    <div class="stalk-container">
+        <div class="post-header">
+            <div class="post-navigation">
+                <a href="/" class="back-button">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M19 12H5M12 19l-7-7 7-7"/>
+                    </svg>
+                    Back to Feed
+                </a>
+                <div class="post-stats">
+                    <div class="stat-item">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                            <circle cx="12" cy="12" r="3"/>
+                        </svg>
+                        <span class="view-count"><%= views %></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="post-content" data-post-id="<%= post._id %>">
+            <% if (post.media && post.media.length > 0) { %>
+                <div class="media-container">
+                    <div class="media-grid">
+                        <% post.media.forEach((media, index) => { %>
+                            <div class="media-item reveal-item" data-index="<%= index %>">
+                                <% if (media.type === 'image') { %>
+                                    <img src="/uploads/<%= media.filename %>" alt="Post media" loading="lazy">
+                                <% } else if (media.type === 'video') { %>
+                                    <video src="/uploads/<%= media.filename %>" controls></video>
+                                <% } %>
+                                <div class="media-overlay"></div>
+                            </div>
+                        <% }); %>
+                    </div>
+                    <% if (post.media.length > 12) { %>
+                        <div class="grid-pagination">
+                            <button class="prev-page" disabled>&lt;</button>
+                            <span class="page-info">1 / <%= Math.ceil(post.media.length / 12) %></span>
+                            <button class="next-page">&gt;</button>
+                        </div>
+                    <% } %>
+                </div>
+            <% } %>
+
+            <div class="post-text reveal-text">
+                <p><%= post.content %></p>
+            </div>
+
+            <div class="post-footer reveal-footer">
+                <div class="post-date">
+                    <%= new Date(post.timestamp).toLocaleString() %>
+                </div>
+                <div class="post-id">
+                    <%= post._id %>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="media-viewer">
+        <div class="viewer-content">
+            <div class="viewer-main"></div>
+            <div class="viewer-controls">
+                <button class="prev-media">&lt;</button>
+                <button class="next-media">&gt;</button>
+            </div>
+            <button class="close-viewer">&times;</button>
+            <div class="media-counter"></div>
+        </div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/hammer.js/2.0.8/hammer.min.js"></script>
+    <script src="/js/stalk.js"></script>
+    <script src="/js/stalk-intro.js"></script>
+</body>
+</html>

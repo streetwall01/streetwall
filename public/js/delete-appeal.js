@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const submitBtn = document.querySelector('.submit-btn');
 
     // Initialize Socket.IO
-    // const socket = io();
+    const socket = io();
 
     // Character counter
     reasonTextarea.addEventListener('input', () => {
@@ -26,13 +26,10 @@ document.addEventListener('DOMContentLoaded', () => {
         const formGroup = input.closest('.form-group');
         let isValid = input.checkValidity();
         
-        // Additional validation for email and postId
+        // Additional validation for email
         if (input.id === 'email') {
             const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             isValid = emailPattern.test(input.value);
-        } else if (input.id === 'postId') {
-            const postIdPattern = /^[0-9]+$/;
-            isValid = postIdPattern.test(input.value);
         }
         
         if (isValid) {
@@ -82,14 +79,26 @@ document.addEventListener('DOMContentLoaded', () => {
                 })
             });
 
-            if (response.ok) {
+            const data = await response.json();
+
+            if (response.ok && data.success) {
+                // Show success animation
                 submitBtn.classList.remove('submitting');
                 submitBtn.classList.add('success');
+
+                // Emit socket event for real-time updates
+                socket.emit('appealSubmitted', {
+                    email: emailInput.value.trim(),
+                    postId: postIdInput.value.trim(),
+                    reason: reasonTextarea.value.trim()
+                });
+
+                // Redirect after success animation
                 setTimeout(() => {
                     window.location.href = '/';
                 }, 1500);
             } else {
-                throw new Error('Failed to submit appeal');
+                throw new Error(data.message || 'Failed to submit appeal');
             }
         } catch (error) {
             console.error('Error:', error);

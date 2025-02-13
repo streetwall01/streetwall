@@ -1,6 +1,6 @@
 :root {
-    --primary-color: #2563eb;
-    --primary-hover: #1d4ed8;
+    --primary-color: #0a5b46;
+    --primary-hover: #0c8f6a;
     --danger-color: #dc2626;
     --danger-hover: #b91c1c;
     --text-primary: #1f2937;
@@ -332,4 +332,13 @@ h1 {
     .cancel-btn {
         width: 100%;
     }
+}
+
+p {
+    text-align: center;
+    margin-top: 1rem;
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    line-height: 1.5;
+    margin: 12px;
 }
