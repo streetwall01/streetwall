@@ -119,32 +119,99 @@ io.on('connection', (socket) => {
   // Handle stats request
   socket.on('requestStats', async () => {
     try {
-      const totalPosts = await Post.countDocuments({ isDeleted: false });
-      const totalImages = await Post.aggregate([
-        { $match: { isDeleted: false } },
-        { $unwind: "$media" },
-        { $match: { "media.type": "image" } },
-        { $count: "total" }
+      // Get current stats
+      const [totalPosts, totalMedia, pendingAppeals] = await Promise.all([
+        Post.countDocuments({ isDeleted: false }),
+        Post.aggregate([
+          { $match: { isDeleted: false } },
+          { $unwind: "$media" },
+          { $count: "total" }
+        ]),
+        Appeal.countDocuments({ status: 'pending' })
       ]);
 
-      // Calculate storage used
-      const uploadDir = path.join(__dirname, 'public/uploads');
-      let storageUsed = 0;
-      try {
-        const files = await fs.readdir(uploadDir);
-        for (const file of files) {
-          const stats = await fs.stat(path.join(uploadDir, file));
-          storageUsed += stats.size;
-        }
-      } catch (error) {
-        console.error('Error calculating storage:', error);
-      }
+      // Get last week's stats for comparison
+      const lastWeek = new Date();
+      lastWeek.setDate(lastWeek.getDate() - 7);
 
-      socket.emit('statsUpdate', {
+      const [lastWeekPosts, lastWeekMedia, lastWeekAppeals] = await Promise.all([
+        Post.countDocuments({ 
+          isDeleted: false,
+          timestamp: { $lt: lastWeek }
+        }),
+        Post.aggregate([
+          { 
+            $match: { 
+              isDeleted: false,
+              timestamp: { $lt: lastWeek }
+            }
+          },
+          { $unwind: "$media" },
+          { $count: "total" }
+        ]),
+        Appeal.countDocuments({ 
+          status: 'pending',
+          timestamp: { $lt: lastWeek }
+        })
+      ]);
+
+      // Calculate percentage changes
+      const postsChangePercentage = lastWeekPosts ? ((totalPosts - lastWeekPosts) / lastWeekPosts) * 100 : 0;
+      const mediaChangePercentage = lastWeekMedia[0]?.total ? ((totalMedia[0]?.total - lastWeekMedia[0].total) / lastWeekMedia[0].total) * 100 : 0;
+      const appealsChangePercentage = lastWeekAppeals ? ((pendingAppeals - lastWeekAppeals) / lastWeekAppeals) * 100 : 0;
+
+      // Get activity data for the last 7 days
+      const activityData = await Promise.all([
+        ...Array(7).fill().map((_, i) => {
+          const date = new Date();
+          date.setDate(date.getDate() - i);
+          const startOfDay = new Date(date.setHours(0, 0, 0, 0));
+          const endOfDay = new Date(date.setHours(23, 59, 59, 999));
+
+          return Promise.all([
+            Post.countDocuments({
+              isDeleted: false,
+              timestamp: { $gte: startOfDay, $lte: endOfDay }
+            }),
+            Appeal.countDocuments({
+              timestamp: { $gte: startOfDay, $lte: endOfDay }
+            })
+          ]);
+        })
+      ]);
+
+      // Get content distribution
+      const distribution = await Post.aggregate([
+        { $match: { isDeleted: false } },
+        { $unwind: "$media" },
+        {
+          $group: {
+            _id: "$media.type",
+            count: { $sum: 1 }
+          }
+        }
+      ]);
+
+      const stats = {
         totalPosts,
-        totalImages: totalImages[0]?.total || 0,
-        storageUsed: (storageUsed / (1024 * 1024)).toFixed(2) + ' MB'
-      });
+        totalMedia: totalMedia[0]?.total || 0,
+        pendingAppeals,
+        postsChangePercentage,
+        mediaChangePercentage,
+        appealsChangePercentage,
+        activity: {
+          posts: activityData.map(([posts]) => posts).reverse(),
+          appeals: activityData.map(([, appeals]) => appeals).reverse()
+        },
+        distribution: {
+          images: distribution.find(d => d._id === 'image')?.count || 0,
+          videos: distribution.find(d => d._id === 'video')?.count || 0,
+          text: await Post.countDocuments({ isDeleted: false, content: { $ne: null, $ne: '' } }),
+          other: await Post.countDocuments({ isDeleted: false, media: { $size: 0 }, content: null })
+        }
+      };
+
+      socket.emit('statsUpdate', stats);
     } catch (error) {
       console.error('Error getting stats:', error);
     }

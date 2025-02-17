@@ -3,365 +3,272 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Admin Street Wall</title>
-    <meta name="description" content="Street wall is kind of freedom wall can be freedom for posting, And no boundaries">
+    <title>Admin Dashboard - Street Wall</title>
+    <meta name="description" content="Street Wall Admin Dashboard">
     <meta name="author" content="Ralph Quinones">
-    <meta name="copyright" content="By Ralph Quinones - FW">
-    <meta name="robots" content="index, follow">
-    <meta name="twitter:card" content="summary">
-    <meta name="twitter:title" content="Admin Street Wall">
-    <meta name="twitter:description" content="Street wall is kind of freedom wall can be freedom for posting, And no boundaries">
-    <meta name="twitter:image" content="/image/streetwall.png">
-    <meta name="twitter:image:alt" content="Admin Street Wall">
+    <meta name="robots" content="noindex, nofollow">
     
-    <meta property="og:type" content="website">
-    <meta property="og:title" content="Admin Street Wall">
-    <meta property="og:url" content="">
-    <meta property="og:image" content="/image/streetwall.svg">
-    <meta property="og:description" content="Street wall is kind of freedom wall can be freedom for posting, And no boundaries">
-
     <link rel="shortcut icon" href="/image/favicon.svg" type="image/x-icon">
     <link rel="stylesheet" href="/css/admin-dashboard.css">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
     <script src="/socket.io/socket.io.js"></script>
-
 </head>
-<body class="bg-light">
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo-container">
+                    <img src="/image/streetwall.png" alt="Street Wall Logo" class="logo-image">
+                    <span class="logo-text">Street Wall</span>
+                </div>
+                <button class="menu-toggle">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M18 6L6 18M6 6l12 12"/>
+                    </svg>
+                </button>
+            </div>
 
-    <div class="container-fluid">
-        <div class="row">
-            <!-- Sidebar -->
-            <div class="col-md-2 bg-dark text-light py-4 min-vh-100 sidebar">
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h4 class="mb-0">Admin - SW</h4>
-                    <button class="btn btn-link text-light d-md-none" onclick="toggleSidebar()">
-                        <i class="bi bi-x-lg"></i>
+            <nav class="nav-menu">
+                <a href="#dashboard" class="nav-item active" data-section="dashboard-section">
+                    <svg class="nav-icon" viewBox="0 0 24 24">
+                        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+                        <polyline points="9 22 9 12 15 12 15 22"/>
+                    </svg>
+                    Dashboard
+                </a>
+                <a href="#posts" class="nav-item" data-section="posts-section">
+                    <svg class="nav-icon" viewBox="0 0 24 24">
+                        <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/>
+                        <polyline points="13 2 13 9 20 9"/>
+                    </svg>
+                    Posts
+                </a>
+                <a href="#appeals" class="nav-item" data-section="appeals-section">
+                    <svg class="nav-icon" viewBox="0 0 24 24">
+                        <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/>
+                        <line x1="4" y1="22" x2="4" y2="15"/>
+                    </svg>
+                    Appeals
+                </a>
+                <a href="/admin/logout" class="nav-item">
+                    <svg class="nav-icon" viewBox="0 0 24 24">
+                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+                        <polyline points="16 17 21 12 16 7"/>
+                        <line x1="21" y1="12" x2="9" y2="12"/>
+                    </svg>
+                    Logout
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="page-header">
+                <h1 class="page-title">Dashboard</h1>
+                <div class="header-actions">
+                    <button class="btn btn-primary">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"/>
+                            <line x1="12" y1="8" x2="12" y2="16"/>
+                            <line x1="8" y1="12" x2="16" y2="12"/>
+                        </svg>
+                        New Report
                     </button>
                 </div>
-                <div class="nav flex-column nav-pills">
-                    <a class="nav-link active" data-bs-toggle="pill" href="#dashboard">
-                        <i class="bi bi-speedometer2 me-2"></i>Dashboard
-                    </a>
-                    <a class="nav-link" data-bs-toggle="pill" href="#posts">
-                        <i class="bi bi-file-text me-2"></i>Posts
-                    </a>
-                    <a class="nav-link" data-bs-toggle="pill" href="#appeals">
-                        <i class="bi bi-exclamation-triangle me-2"></i>Appeals
-                    </a>
-                    <a class="nav-link" data-bs-toggle="pill" href="#settings">
-                        <i class="bi bi-gear me-2"></i>Settings
-                    </a>
+            </div>
+
+            <div id="dashboard-section" class="dashboard-section section active">
+                <!-- Stats Grid -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <h3 class="stat-title">Total Posts</h3>
+                            <div class="stat-icon" style="background: rgba(79, 70, 229, 0.1); color: #4f46e5;">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/>
+                                    <polyline points="13 2 13 9 20 9"/>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="stat-value" id="totalPosts">0</div>
+                        <div class="stat-change">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/>
+                                <polyline points="17 6 23 6 23 12"/>
+                            </svg>
+                            <span id="postsChange" style="color: #22c55e;">+0.0%</span>
+                            <span style="color: #64748b;">vs last week</span>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <h3 class="stat-title">Total Media</h3>
+                            <div class="stat-icon" style="background: rgba(239, 68, 68, 0.1); color: #ef4444;">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                                    <circle cx="8.5" cy="8.5" r="1.5"/>
+                                    <polyline points="21 15 16 10 5 21"/>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="stat-value" id="totalMedia">0</div>
+                        <div class="stat-change">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="23 18 13.5 8.5 8.5 13.5 1 6"/>
+                                <polyline points="17 18 23 18 23 12"/>
+                            </svg>
+                            <span id="mediaChange" style="color: #ef4444;">+0.0%</span>
+                            <span style="color: #64748b;">vs last week</span>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <h3 class="stat-title">Pending Appeals</h3>
+                            <div class="stat-icon" style="background: rgba(245, 158, 11, 0.1); color: #f59e0b;">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/>
+                                    <line x1="4" y1="22" x2="4" y2="15"/>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="stat-value" id="pendingAppeals">0</div>
+                        <div class="stat-change">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/>
+                                <polyline points="17 6 23 6 23 12"/>
+                            </svg>
+                            <span id="appealsChange" style="color: #22c55e;">+0.0%</span>
+                            <span style="color: #64748b;">vs last week</span>
+                        </div>
+                    </div>
                 </div>
-                <div class="mt-auto text-center pt-4">
-                    <small>Admin Panel</small>
-                    <a href="/admin/logout" class="btn btn-outline-light btn-sm mt-2 d-block mx-3">Logout</a>
+
+                <!-- Charts Grid -->
+                <div class="charts-grid">
+                    <div class="chart-card">
+                        <div class="card-header">
+                            <h3>Activity Overview</h3>
+                            <select class="chart-range">
+                                <option value="7">Last 7 days</option>
+                                <option value="30">Last 30 days</option>
+                                <option value="90">Last 90 days</option>
+                            </select>
+                        </div>
+                        <div id="activityChart"></div>
+                    </div>
+
+                    <div class="chart-card">
+                        <div class="card-header">
+                            <h3>Content Distribution</h3>
+                        </div>
+                        <div id="distributionChart"></div>
+                    </div>
                 </div>
             </div>
 
-            <!-- Main Content -->
-            <div class="col-md-10 p-4 main-content">
-                <div class="tab-content">
-                    <!-- Dashboard Tab -->
-                    <div class="tab-pane fade show active" id="dashboard">
-                        <div class="row g-3 mb-4">
-                            <div class="col-12 col-md-6 col-lg-4">
-                                <div class="stat-card">
-                                    <h5>Total Posts</h5>
-                                    <h2 class="mb-0"><%= stats.totalPosts %></h2>
-                                </div>
-                            </div>
-                            <div class="col-12 col-md-6 col-lg-4">
-                                <div class="stat-card">
-                                    <h5>Total Media</h5>
-                                    <h2 class="mb-0"><%= stats.totalImages %></h2>
-                                </div>
-                            </div>
-                            <div class="col-12 col-md-6 col-lg-4">
-                                <div class="stat-card">
-                                    <h5>Active Users</h5>
-                                    <h2 class="mb-0" id="activeUsers">0</h2>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Recent Activity -->
-                        <div class="card dashboard-card">
-                            <div class="card-header bg-white">
-                                <h5 class="mb-0">Recent Activity</h5>
-                            </div>
-                            <div class="card-body">
-                                <div class="table-responsive">
-                                    <table class="table">
-                                        <thead>
-                                            <tr>
-                                                <th>Time</th>
-                                                <th>Action</th>
-                                                <th>Details</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody id="activitiesTable">
-                                            <% if (activities && activities.length > 0) { %>
-                                                <% activities.forEach(function(activity) { %> Continuing with the admin-dashboard.ejs file content:
-
-```html
-                                                    <tr>
-                                                        <td><%= new Date(activity.timestamp).toLocaleString() %></td>
-                                                        <td><span class="badge bg-<%= activity.action === 'New Post' ? 'primary' : 'warning' %>">
-                                                            <%= activity.action %>
-                                                        </span></td>
-                                                        <td><%= activity.details %></td>
-                                                    </tr>
-                                                <% }); %>
-                                            <% } else { %>
-                                                <tr>
-                                                    <td colspan="3" class="text-center">No recent activities</td>
-                                                </tr>
-                                            <% } %>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
+            <div id="posts-section" class="posts-section section">
+                <div class="data-card">
+                    <div class="card-header">
+                        <h3>All Posts</h3>
                     </div>
-
-                    <!-- Posts Tab -->
-                    <div class="tab-pane fade" id="posts">
-                        <div class="card dashboard-card">
-                            <div class="card-header bg-white">
-                                <h5 class="mb-0">Manage Posts</h5>
-                            </div>
-                            <div class="card-body">
-                                <div class="table-responsive">
-                                    <table class="table table-hover">
-                                        <thead>
-                                            <tr>
-                                                <th>ID</th>
-                                                <th>Content</th>
-                                                <th>Media</th>
-                                                <th>Date</th>
-                                                <th>Actions</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody id="postsTableBody">
-                                            <% if (posts && posts.length > 0) { %>
-                                                <% posts.forEach(function(post) { %>
-                                                    <tr data-post-id="<%= post._id %>">
-                                                        <td><%= post._id %></td>
-                                                        <td><%= post.content || 'No content' %></td>
-                                                        <td>
-                                                            <% if (post.media && post.media.length > 0) { %>
-                                                                <%= post.media.length %> files
-                                                            <% } else { %>
-                                                                No media
-                                                            <% } %>
-                                                        </td>
-                                                        <td><%= new Date(post.timestamp).toLocaleString() %></td>
-                                                        <td>
-                                                            <button class="btn btn-sm btn-danger" onclick="deletePost('<%= post._id %>')">
-                                                                <i class="bi bi-trash"></i> Delete
-                                                            </button>
-                                                        </td>
-                                                    </tr>
-                                                <% }); %>
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Content</th>
+                                    <th>Media</th>
+                                    <th>Date</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% posts.forEach(function(post) { %>
+                                    <tr data-post-id="<%= post._id %>">
+                                        <td><%= post._id %></td>
+                                        <td><%= post.content ? (post.content.length > 50 ? post.content.substring(0, 50) + '...' : post.content) : 'No content' %></td>
+                                        <td>
+                                            <% if (post.media && post.media.length > 0) { %>
+                                                <span class="badge badge-info"><%= post.media.length %> files</span>
                                             <% } else { %>
-                                                <tr>
-                                                    <td colspan="5" class="text-center">No posts found</td>
-                                                </tr>
+                                                <span class="badge">No media</span>
                                             <% } %>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
+                                        </td>
+                                        <td><%= new Date(post.timestamp).toLocaleString() %></td>
+                                        <td>
+                                            <button class="btn btn-danger" onclick="deletePost('<%= post._id %>')">
+                                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                    <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                                                </svg>
+                                                Delete
+                                            </button>
+                                        </td>
+                                    </tr>
+                                <% }); %>
+                            </tbody>
+                        </table>
                     </div>
+                </div>
+            </div>
 
-                    <!-- Appeals Tab -->
-                    <div class="tab-pane fade" id="appeals">
-                        <div class="card dashboard-card mb-4">
-                            <div class="card-header bg-white d-flex justify-content-between align-items-center">
-                                <div class="d-flex align-items-center gap-3">
-                                    <h5 class="mb-0">Delete Appeals</h5>
-                                    <button class="btn btn-danger btn-sm" onclick="clearAllAppeals()">
-                                        <i class="bi bi-trash"></i> Clear All Appeals
-                                    </button>
-                                </div>
-                                <div class="btn-group">
-                                    <button class="btn btn-outline-secondary btn-sm active" data-filter="all">All</button>
-                                    <button class="btn btn-outline-secondary btn-sm" data-filter="pending">Pending</button>
-                                    <button class="btn btn-outline-secondary btn-sm" data-filter="approved">Approved</button>
-                                    <button class="btn btn-outline-secondary btn-sm" data-filter="rejected">Rejected</button>
-                                </div>
-                            </div>
-                            <div class="card-body">
-                                <div id="appeals-list">
-                                    <% if (appeals && appeals.length > 0) { %>
-                                        <% appeals.forEach(function(appeal) { %>
-                                            <div class="appeal-card card mb-3" data-appeal-id="<%= appeal._id %>" data-status="<%= appeal.status %>">
-                                                <div class="card-body">
-                                                    <div class="d-flex flex-column flex-md-row justify-content-between">
-                                                        <div class="appeal-details mb-3 mb-md-0">
-                                                            <h6 class="mb-2">Appeal ID: <%= appeal._id %></h6>
-                                                            <p class="mb-1"><small>Post ID: <%= appeal.postId %></small></p>
-                                                            <p class="mb-1"><small>Email: <%= appeal.email %></small></p>
-                                                            <p class="mb-0"><small>Date: <%= new Date(appeal.timestamp).toLocaleString() %></small></p>
-                                                            <% if (appeal.status) { %>
-                                                                <span class="badge bg-<%= appeal.status === 'approved' ? 'success' : appeal.status === 'rejected' ? 'danger' : 'warning' %>">
-                                                                    <%= appeal.status.charAt(0).toUpperCase() + appeal.status.slice(1) %>
-                                                                </span>
-                                                            <% } %>
-                                                        </div>
-                                                        <div class="appeal-actions d-flex flex-row flex-md-column">
-                                                            <button class="btn btn-outline-primary btn-sm mb-md-2 me-2 me-md-0" 
-                                                                    onclick="viewAppealReason('<%= appeal._id %>', '<%= appeal.reason %>')">
-                                                                View Reason
-                                                            </button>
-                                                            <% if (!appeal.status || appeal.status === 'pending') { %>
-                                                                <button class="btn btn-success btn-sm mb-md-2 me-2 me-md-0" 
-                                                                        onclick="handleAppeal('<%= appeal._id %>', '<%= appeal.postId %>', 'approved')">
-                                                                    Approve
-                                                                </button>
-                                                                <button class="btn btn-danger btn-sm" 
-                                                                        onclick="handleAppeal('<%= appeal._id %>', '<%= appeal.postId %>', 'rejected')">
-                                                                    Reject
-                                                                </button>
-                                                            <% } %>
-                                                        </div>
-                                                    </div>
+            <div id="appeals-section" class="appeals-section section">
+                <div class="data-card">
+                    <div class="card-header">
+                        <h3>All Appeals</h3>
+                        <button class="btn btn-primary" onclick="clearAllAppeals()">Clear All</button>
+                    </div>
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Email</th>
+                                    <th>Post ID</th>
+                                    <th>Status</th>
+                                    <th>Date</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% appeals.forEach(function(appeal) { %>
+                                    <tr data-appeal-id="<%= appeal._id %>">
+                                        <td><%= appeal._id %></td>
+                                        <td><%= appeal.email %></td>
+                                        <td><%= appeal.postId %></td>
+                                        <td>
+                                            <span class="badge badge-<%= appeal.status === 'approved' ? 'success' : appeal.status === 'rejected' ? 'danger' : 'warning' %>">
+                                                <%= appeal.status.charAt(0).toUpperCase() + appeal.status.slice(1) %>
+                                            </span>
+                                        </td>
+                                        <td><%= new Date(appeal.timestamp).toLocaleString() %></td>
+                                        <td>
+                                            <% if (!appeal.processed) { %>
+                                                <div class="btn-group">
+                                                    <button class="btn btn-success" onclick="handleAppeal('<%= appeal._id %>', '<%= appeal.postId %>', 'approved')">
+                                                        Approve
+                                                    </button>
+                                                    <button class="btn btn-danger" onclick="handleAppeal('<%= appeal._id %>', '<%= appeal.postId %>', 'rejected')">
+                                                        Reject
+                                                    </button>
                                                 </div>
-                                            </div>
-                                        <% }); %>
-                                    <% } else { %>
-                                        <div class="text-center py-4">
-                                            <p class="text-muted mb-0">No appeals found</p>
-                                        </div>
-                                    <% } %>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Settings Tab -->
-                    <div class="tab-pane fade" id="settings">
-                        <div class="card dashboard-card">
-                            <div class="card-header bg-white">
-                                <h5 class="mb-0">Admin Settings</h5>
-                            </div>
-                            <div class="card-body">
-                                <form id="settingsForm">
-                                    <div class="mb-3">
-                                        <label class="form-label">Change Password</label>
-                                        <input type="password" class="form-control" id="newPassword" placeholder="New Password">
-                                    </div>
-                                    <button type="submit" class="btn btn-primary">Save Changes</button>
-                                </form>
-                            </div>
-                        </div>
+                                            <% } %>
+                                        </td>
+                                    </tr>
+                                <% }); %>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
-        </div>
+        </main>
     </div>
 
-    <!-- Appeal Reason Modal -->
-    <div class="modal fade" id="reasonModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Appeal Reason</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <p id="appealReason"></p>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="/js/admin-dashboard.js"></script>
-    <script>
-        // Sidebar Toggle Function
-        function toggleSidebar() {
-            document.querySelector('.sidebar').classList.toggle('active');
-        }
-
-        // Post deletion function
-        async function deletePost(postId) {
-            if (!confirm('Are you sure you want to delete this post?')) {
-                return;
-            }
-
-            try {
-                const response = await fetch(`/admin/delete-post/${postId}`, {
-                    method: 'DELETE',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
-                });
-
-                const data = await response.json();
-
-                if (response.ok) {
-                    // Remove the post row
-                    const row = document.querySelector(`tr[data-post-id="${postId}"]`);
-                    if (row) {
-                        row.remove();
-                    }
-
-                    // Update stats
-                    const totalPosts = document.querySelector('#totalPosts');
-                    if (totalPosts) {
-                        const currentCount = parseInt(totalPosts.textContent);
-                        totalPosts.textContent = currentCount - 1;
-                    }
-
-                    // Check if table is empty
-                    const tbody = document.querySelector('#postsTableBody');
-                    if (tbody && !tbody.querySelector('tr')) {
-                        tbody.innerHTML = `
-                            <tr>
-                                <td colspan="5" class="text-center">No posts found</td>
-                            </tr>
-                        `;
-                    }
-                } else {
-                    alert(data.message || 'Error deleting post');
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                alert('Error deleting post');
-            }
-        }
-
-        // Socket.IO connection
-        const socket = io();
-
-        // Handle post deletion from other clients
-        socket.on('postDeleted', (postId) => {
-            const row = document.querySelector(`tr[data-post-id="${postId}"]`);
-            if (row) {
-                row.remove();
-
-                // Update stats
-                const totalPosts = document.querySelector('#totalPosts');
-                if (totalPosts) {
-                    const currentCount = parseInt(totalPosts.textContent);
-                    totalPosts.textContent = currentCount - 1;
-                }
-
-                // Check if table is empty
-                const tbody = document.querySelector('#postsTableBody');
-                if (tbody && !tbody.querySelector('tr')) {
-                    tbody.innerHTML = `
-                        <tr>
-                            <td colspan="5" class="text-center">No posts found</td>
-                        </tr>
-                    `;
-                }
-            }
-        });
-    </script>
 </body>
 </html>

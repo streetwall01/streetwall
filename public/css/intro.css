@@ -24,7 +24,7 @@
 
 .rain-word {
     position: absolute;
-    color: rgba(255, 255, 255, 0.3);
+    color: rgba(255, 255, 255, 0.901);
     font-family: 'Inter', sans-serif;
     font-weight: 300;
     pointer-events: none;
